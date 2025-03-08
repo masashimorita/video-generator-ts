@@ -1,0 +1,15 @@
+{
+  "name": "video-generator-ts",
+  "version": "1.0.0",
+  "description": "Generate Video from Text with Langchain JS",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@personal-github:masashimorita/video-generator-ts.git"
+  },
+  "author": "masashimorita",
+  "license": "MIT"
+}
