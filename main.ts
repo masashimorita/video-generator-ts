@@ -90,7 +90,7 @@ async function fetchRelatedImage(keyword: string, savePath: string = "related_im
   const url = `https://api.unsplash.com/photos/random?query=${encodeURIComponent(keyword)}&client_id=${UNSPLASH_ACCESS_KEY}`;
   const response = await fetch(url);
   if (response.ok) {
-    const data = await response.json();
+    const data = await response.json() as any;
     const imageUrl: string = data.urls.regular;
     const imageResponse = await fetch(imageUrl);
     if (!imageResponse.ok) {
@@ -111,7 +111,7 @@ async function fetchRelatedMusic(keyword: string, savePath: string = "related_mu
   const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${JAMENDO_CLIENT_ID}&format=json&limit=1&search=${encodeURIComponent(keyword)}`;
   const response = await fetch(url);
   if (response.ok) {
-    const data = await response.json();
+    const data = await response.json() as any;
     if (data.results && data.results.length > 0) {
       const musicUrl: string = data.results[0].audio;
       const musicResponse = await fetch(musicUrl);
