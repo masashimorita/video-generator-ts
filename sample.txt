@@ -1,0 +1,68 @@
+What is RAG : Retrieval Augmented Generation, a technique which leverages the strengths of both retrieval-based and generative models.
+
+What is an Agent : An agent refers to a computer program or system engineered to observe its surroundings, make decisions, and execute actions to fulfill a particular objective or set of objectives. This agent functions autonomously, indicating that it operates independently without direct human intervention.
+
+What is Agentic RAG : Agentic RAG is an agent based approach to perform question answering over multiple documents in an orchestrated fashion. While standard RAG excels at simple queries across a few documents, agentic RAG takes it a step further and emerges as a potent solution for question answering. It introduces a layer of intelligence by employing AI agents. These agents act as autonomous decision-makers, analyzing initial findings and strategically selecting the most effective tools for further data retrieval.
+
+Agentic RAG employs an agent-based method to conduct question answering across multiple documents in a systematic manner. While traditional RAG is effective for simple queries within a limited number of documents, Agentic RAG enhances this process, presenting a robust solution for question answering. It incorporates a level of intelligence through the use of AI agents. These agents operate independently, evaluating initial results and carefully choosing the most suitable tools for additional data extraction.
+
+Imagine it as having a team of specialized researchers, each equipped with distinct skills and abilities, collaboratively working together to meet your informational needs.
+
+
+Agentic RAG
+Key Features and Advantages of Agentic RAG:
+
+Orchestrated Question Answering: Agentic RAG methodically manages the question-answering process by deconstructing it into smaller, manageable segments, designating specific agents for each segment, and maintaining seamless coordination to achieve the best results.
+Goal-Oriented Approach: The agents are designed to comprehend and pursue defined objectives, enabling deeper and more meaningful interactions.
+Advanced Planning and Reasoning: Agents in the system are adept at complex planning and multi-step reasoning, identifying the most effective strategies for gathering, analyzing, and synthesizing information to address intricate questions.
+Utilization of Tools and Adaptability: Agents in Agentic RAG can utilize external tools and resources, such as search engines, databases, and specialized APIs, to boost their capabilities in data collection and processing.
+Context Sensitivity: The system takes into account the current context, previous interactions, and user preferences to make well-informed decisions and execute relevant actions.
+Progressive Learning: These intelligent agents are engineered to learn and evolve over time, enhancing their knowledge base and problem-solving abilities with each new challenge and piece of information they encounter.
+Customization and Flexibility: The Agentic RAG framework offers significant flexibility, allowing for customization to meet specific needs and adapt to various domains. This tailoring extends to the agents and their functionalities to better align with specific tasks and informational contexts.
+Enhanced Accuracy and Efficiency: By combining the strengths of Large Language Models (LLMs) and agent-based systems, Agentic RAG achieves greater accuracy and efficiency in question answering than traditional models.
+Innovative Potential: This technology paves the way for novel applications across diverse sectors
+How is it different from Traditioal RAG
+
+
+Traditional RAG vs Agentic RAG
+Sample Application of Agentic Technology: In the example provided, I have developed an Agentic RAG QnA chatbot designed to respond to queries based on the content of an uploaded document. This application processes the PDF file into vectors, storing them as embeddings in a Vector Database.
+
+Depending on the nature of your inquiry, the tool’s agent determines the appropriate tool to utilize in order to respond to the customer’s question. For example:
+
+If the customer needs to book an appointment or schedule a consultation, the agent activates the appointment tool, which then provides a dynamic calendar booking URL.
+If the customer inquires about the status of an order or has questions regarding the order, the agent assigns this task to the WISMO tool, which retrieves data from the Order Management System (OMS).
+If the customer queries about the details of the uploaded document, the tools agent orchestrates this question to the document retrieval tool to perform a vector similarity search and deliver the results.
+
+Agentic RAG Demo
+RAG Pipeline
+
+Ingestion:
+
+Upload documents (knowledge base to build the context)
+Generate document embeddings
+Store these embeddings as vectors in a vector database
+Retrieval:
+
+Customer asks a question
+Create query embeddings from customer’s question
+Conduct a similarity search in the vector database
+Retrieve relevant context from Vector DB
+Formulate the prompt: Combine user query with context
+Generation:
+
+Generate content for user’s question based on the prompt.
+Refine the generated content
+Agent pipeline :
+
+· Determine the tool to be used (booking calendar and WISMO in our case)
+
+· Invoke the relevant tool based on user query
+
+· Parse the response
+
+· Generate the content
+
+Conclusion
+Agentic RAG represents a significant advancement in the field of question answering and information retrieval. By integrating autonomous AI agents with the retrieval-augmented generation approach, this system transcends traditional limitations associated with simpler query answering models. The agents’ ability to operate independently, assess initial data, and strategically utilize advanced tools for deeper data retrieval allows Agentic RAG to address complex queries across multiple documents efficiently and effectively.
+
+This enhanced capability is particularly beneficial in environments where decision-making is based on vast amounts of disparate data sources. Agentic RAG’s orchestrated question-answering process, combined with its agents’ advanced planning and multi-step reasoning abilities, ensures that the system not only retrieves relevant information but also synthesizes it in a way that is contextually aware and aligned with user needs.

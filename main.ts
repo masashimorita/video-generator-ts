@@ -2,9 +2,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import fetch from 'node-fetch';
 import dotenv from "dotenv";
-import { OpenAI } from '@langchain/openai';
-import { LLMChain } from 'langchain/chains';
-import { PromptTemplate } from '@langchain/core/prompts';
+import { z } from "zod";
+import { ChatOpenAI } from '@langchain/openai';
+import { RunnableSequence } from '@langchain/core/runnables';
+import { ChatPromptTemplate } from '@langchain/core/prompts';
 
 const ffmpeg = require('fluent-ffmpeg');
 
@@ -30,20 +31,35 @@ if (!JAMENDO_CLIENT_ID) {
 }
 
 // OpenAI の初期化
-const llm = new OpenAI({ temperature: 0.5 });
+const llm = new ChatOpenAI({
+  modelName: "gpt-4o-mini",
+  temperature: 0,
+})
 
 /**
  * 入力テキストから要約を生成する関数
  */
 async function generateSummary(text: string): Promise<string> {
-  const promptTemplate = new PromptTemplate({
-    template: "以下のテキストを日本語で要約してください:\n{text}\n要約:",
-    inputVariables: ["text"],
-  });
-  const chain = new LLMChain({ llm, prompt: promptTemplate });
   try {
-    const result = await chain.call({ text });
-    return result.text;
+    const outputSchema = z.object({
+      summary: z.string().describe("Summary of a text"),
+    });
+  
+    const promptTemplate = ChatPromptTemplate.fromTemplate(`
+      以下のテキストを日本語で要約してください:
+      {text}
+      要約はsummaryとして返却してください。
+    `);
+  
+    const model = llm.withStructuredOutput(outputSchema);
+  
+    const chain = RunnableSequence.from([
+      promptTemplate,
+      model,
+    ]);
+
+    const result = await chain.invoke({ text });
+    return result.summary;
   } catch (error: any) {
     throw new Error("要約生成中にエラーが発生しました: " + error);
   }
@@ -53,14 +69,26 @@ async function generateSummary(text: string): Promise<string> {
  * 要約文から画像用キーワードを抽出する関数
  */
 async function extractImageKeyword(summary: string): Promise<string> {
-  const promptTemplate = new PromptTemplate({
-    template: "以下の要約文から、画像取得に最も適したキーワードを1語だけ返してください。\n要約: {summary}\nキーワード:",
-    inputVariables: ["summary"],
-  });
-  const chain = new LLMChain({ llm, prompt: promptTemplate });
   try {
-    const result = await chain.call({ summary });
-    return result.text.trim();
+    const outputSchema = z.object({
+      keyword: z.string().describe('most relevant keyword of summary'),
+    });
+  
+    const promptTemplate = ChatPromptTemplate.fromTemplate(`
+      以下の要約文から、画像取得に最も適したキーワードを1語だけ返してください。要約: 
+      {summary}
+      キーワードはkeywordとして返却してください。
+    `);
+  
+    const model = llm.withStructuredOutput(outputSchema);
+  
+    const chain = RunnableSequence.from([
+      promptTemplate,
+      model,
+    ]);
+
+    const result = await chain.invoke({ summary });
+    return result.keyword.trim();
   } catch (error: any) {
     throw new Error("画像キーワード抽出中にエラーが発生しました: " + error);
   }
@@ -70,14 +98,26 @@ async function extractImageKeyword(summary: string): Promise<string> {
  * 要約文から音楽用キーワードを抽出する関数
  */
 async function extractMusicKeyword(summary: string): Promise<string> {
-  const promptTemplate = new PromptTemplate({
-    template: "以下の要約文から、音楽取得に最も適したキーワードを1語だけ返してください。\n要約: {summary}\nキーワード:",
-    inputVariables: ["summary"],
-  });
-  const chain = new LLMChain({ llm, prompt: promptTemplate });
   try {
-    const result = await chain.call({ summary });
-    return result.text.trim();
+    const outputSchema = z.object({
+      keyword: z.string().describe('most relevant keyword of summary'),
+    });
+  
+    const promptTemplate = ChatPromptTemplate.fromTemplate(`
+      以下の要約文から、音楽取得に最も適したキーワードを1語だけ返してください。
+      要約: {summary}
+      キーワードはkeywordとして返却してください。
+    `);
+  
+    const model = llm.withStructuredOutput(outputSchema);
+  
+    const chain = RunnableSequence.from([
+      promptTemplate,
+      model,
+    ]);
+
+    const result = await chain.invoke({ summary });
+    return result.keyword.trim();
   } catch (error: any) {
     throw new Error("音楽キーワード抽出中にエラーが発生しました: " + error);
   }
@@ -176,16 +216,16 @@ function createVideo(
   });
 }
 
+function getText() {
+  return fs.readFileSync('./sample.txt','utf8');
+}
+
 /**
  * メイン処理：要約生成、キーワード抽出、素材取得、ビデオ生成を統合
  */
 async function main(): Promise<void> {
   try {
-    // サンプル入力テキスト（実際の利用時は任意のテキストに置換してください）
-    const inputText = `
-    あなたの要約したいテキストをここに入力してください。例えば、長い記事や論文の内容を簡潔にまとめることが目的です。
-    このコードは、テキストの要約を生成し、要約内容を視覚的に魅力的なビデオに変換するためのサンプルです。
-    `;
+    const inputText = getText();
     console.log("要約を生成中...");
     const summary = await generateSummary(inputText);
     console.log("生成された要約:");
@@ -201,6 +241,7 @@ async function main(): Promise<void> {
     let imagePath: string;
     try {
       imagePath = await fetchRelatedImage(imageKeyword, "related_image.jpg");
+      console.log(imagePath);
     } catch (error) {
       console.error("画像取得エラー:", error);
       imagePath = "default_background.jpg";
