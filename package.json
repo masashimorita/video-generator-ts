@@ -4,7 +4,8 @@
   "description": "Generate Video from Text with Langchain JS",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node --project tsconfig.json main.ts",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
